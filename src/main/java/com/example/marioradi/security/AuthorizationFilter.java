@@ -28,8 +28,10 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        filterChain.doFilter(request,response);
         if (request.getServletPath().equals(SecurityConfig.LOGIN) ||
-            request.getServletPath().equals(SecurityConfig.SIGNUP)){
+            request.getServletPath().equals(SecurityConfig.SIGNUP) ||
+            request.getServletPath().equals(SecurityConfig.GAME)){
             filterChain.doFilter(request,response);
         }else {
             String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);

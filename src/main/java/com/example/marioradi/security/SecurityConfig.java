@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -24,12 +23,18 @@ public class SecurityConfig {
     private final UserDetailService userDetailService;
 
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        JwtAuthenticationFilter authenticationFilter = new JwtAuthenticationFilter(jwtService, authenticationManager());
-        authenticationFilter.setFilterProcessesUrl("/api/login");
-        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         http.csrf().disable();
+        JwtAuthenticationFilter authenticationFilter = new JwtAuthenticationFilter(jwtService, authenticationManager());
+        JwtAuthorizationFilter authorizationFilter = new JwtAuthorizationFilter(jwtService);
+        authenticationFilter.setFilterProcessesUrl("/api/login");
+
+        http.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilter(authenticationFilter);
+
+
 
         http.authorizeRequests(auth -> auth.antMatchers("/api/login", "/api/user/create").permitAll());
         http.authorizeRequests().anyRequest().authenticated();
@@ -49,6 +54,10 @@ public class SecurityConfig {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         return new ProviderManager(daoAuthenticationProvider);
     }
+
+
+
+
 
 
 

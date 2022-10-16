@@ -1,18 +1,34 @@
 package com.example.marioradi.score;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.Tuple;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/score")
 @RequiredArgsConstructor
 public class ScoreController {
 
-    @GetMapping("/save")
-    public void saveScore(){
+    private final ScoreServiceImpl scoreService;
 
+    @PostMapping("/save")
+    public void saveScore(@RequestBody Map<String, String> scoreObj){
+        String username = scoreObj.get("username");
+        int score = Integer.parseInt(scoreObj.get("score"));
+        scoreService.saveScore(username, score);
+    }
+
+    @GetMapping("/{username}")
+    public int findTopUserScore(@PathVariable String username){
+        return scoreService.findTopUserScore(username);
+    }
+
+    @GetMapping("/leaderboard")
+    public List<LeaderBoardResponse> findTopScores(){
+        return scoreService.getLeadBoard();
     }
 
 }

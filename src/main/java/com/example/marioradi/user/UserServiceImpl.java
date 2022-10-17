@@ -3,6 +3,7 @@ package com.example.marioradi.user;
 import com.example.marioradi.role.Role;
 import com.example.marioradi.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,9 +47,8 @@ public class UserServiceImpl  implements UserService{
         user.setRoles(roles);
     }
 
-
-
-
-
-
+    @Override
+    public String getAuthenticatedUserUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 }

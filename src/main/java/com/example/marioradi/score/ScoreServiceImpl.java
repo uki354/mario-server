@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.Tuple;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -28,7 +29,10 @@ public class ScoreServiceImpl implements ScoreService{
 
     @Override
     public int findTopUserScore(String username) {
-        return scoreRepository.findTopByUsername(userService.getAuthenticatedUserUsername());
+        if (Objects.isNull(username))
+            return scoreRepository.findTopByUsername(userService.getAuthenticatedUserUsername());
+        else
+            return scoreRepository.findTopByUsername(username);
     }
 
     @Override

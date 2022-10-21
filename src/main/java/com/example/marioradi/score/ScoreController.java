@@ -22,7 +22,7 @@ public class ScoreController {
     }
 
     @GetMapping("/{username}")
-    public int findTopUserScore(@PathVariable String username){
+    public int findTopUserScore(@PathVariable(required = false) String username){
         return scoreService.findTopUserScore(username);
     }
 

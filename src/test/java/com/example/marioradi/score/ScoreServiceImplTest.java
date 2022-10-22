@@ -28,10 +28,16 @@ class ScoreServiceImplTest {
 
 
     @Test
-    public void shouldVerifyMethodCall_findTopByUsername_MostOnce(){
+    public void shouldGetAuthenticatedUserTopScoreWhenPassedNull(){
         Mockito.when(userService.getAuthenticatedUserUsername()).thenReturn("Test");
-        scoreService.findTopUserScore("Test");
+        scoreService.findTopUserScore(null);
         verify(scoreRepository, Mockito.atMostOnce()).findTopByUsername("Test");
+    }
+
+    @Test
+    public void shouldGetPassedUserTopScore(){
+        scoreService.findTopUserScore("test");
+        verify(scoreRepository, Mockito.atMostOnce()).findTopByUsername("test");
     }
 
 

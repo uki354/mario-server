@@ -1,17 +1,16 @@
 package com.example.marioradi.score;
 
+import com.example.marioradi.user.User;
 import com.example.marioradi.user.UserRepository;
 import com.example.marioradi.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ScoreServiceImplTest {
@@ -22,6 +21,9 @@ class ScoreServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private UserService userService;
+
+    @Captor
+    private ArgumentCaptor<Score> captor;
 
     @InjectMocks
     private ScoreServiceImpl scoreService;
@@ -38,6 +40,18 @@ class ScoreServiceImplTest {
     public void shouldGetPassedUserTopScore(){
         scoreService.findTopUserScore("test");
         verify(scoreRepository, Mockito.atMostOnce()).findTopByUsername("test");
+    }
+
+    @Test
+    public void shouldVerifyScoreSave(){
+        User user = User.builder().username("test").build();
+        when(userRepository.findUserByUsername(Mockito.anyString())).thenReturn(user);
+        scoreService.saveScore("test", 0);
+        verify(scoreRepository).save(captor.capture());
+
+        assertEquals(user.getUsername(),captor.getValue().getUser().getUsername());
+        assertEquals(0,captor.getValue().getValue());
+
     }
 
 

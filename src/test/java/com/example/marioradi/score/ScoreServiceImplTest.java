@@ -8,6 +8,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.Tuple;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,6 +56,14 @@ class ScoreServiceImplTest {
         assertEquals(user.getUsername(),captor.getValue().getUser().getUsername());
         assertEquals(0,captor.getValue().getValue());
 
+    }
+
+    @Test
+    public void shouldReturnLeaderboardListFromTuple(){
+        List<Tuple> tupleList = new ArrayList<>();
+        when(scoreRepository.findTopScores(Mockito.any())).thenReturn(tupleList);
+        List<LeaderBoardResponse> response = scoreService.getLeadBoard();
+        assertEquals(response.size(),tupleList.size());
     }
 
 
